@@ -31,10 +31,10 @@
 
 #ifndef U_DISABLE_OBJ_CODE /* testing */
 #if defined(WINDOWS_WITH_MSVC) || U_PLATFORM_IS_LINUX_BASED
-#define CAN_WRITE_OBJ_CODE
+// #define CAN_WRITE_OBJ_CODE
 #endif
 #if U_PLATFORM_HAS_WIN32_API || defined(U_ELF)
-#define CAN_GENERATE_OBJECTS
+// #define CAN_GENERATE_OBJECTS
 #endif
 #endif
 
