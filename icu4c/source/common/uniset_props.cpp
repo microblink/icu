@@ -237,10 +237,13 @@ public:
     }
 };
 
+#ifdef __cpp_rtti
 constexpr int32_t MAX_DEPTH = 100;
+#endif
 
 }  // namespace
 
+#ifdef __cpp_rtti
 /**
  * Parse the pattern from the given RuleCharacterIterator.  The
  * iterator is advanced over the parsed pattern.
@@ -653,6 +656,7 @@ void UnicodeSet::applyPattern(RuleCharacterIterator& chars,
         ec = U_MEMORY_ALLOCATION_ERROR;
     }
 }
+#endif
 
 //----------------------------------------------------------------
 // Property set implementation

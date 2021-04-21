@@ -711,6 +711,7 @@ UXMLElement::getText(UBool recurse) const {
     return text;
 }
 
+#ifdef __cpp_rtti
 void
 UXMLElement::appendText(UnicodeString &text, UBool recurse) const {
     const UObject *node;
@@ -725,6 +726,7 @@ UXMLElement::appendText(UnicodeString &text, UBool recurse) const {
         }
     }
 }
+#endif
 
 int32_t
 UXMLElement::countAttributes() const {
@@ -765,6 +767,7 @@ UXMLElement::countChildren() const {
     return fChildren.size();
 }
 
+#ifdef __cpp_rtti
 const UObject *
 UXMLElement::getChild(int32_t i, UXMLNodeType &type) const {
     if(0<=i && i<fChildren.size()) {
@@ -820,6 +823,7 @@ UXMLElement::getChildElement(const UnicodeString &name) const {
     }
     return NULL;
 }
+#endif
 
 U_NAMESPACE_END
 

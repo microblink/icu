@@ -325,6 +325,7 @@ unorm2_close(UNormalizer2 *norm2) {
     delete (Normalizer2 *)norm2;
 }
 
+#ifdef __cpp_rtti
 U_CAPI int32_t U_EXPORT2
 unorm2_normalize(const UNormalizer2 *norm2,
                  const UChar *src, int32_t length,
@@ -436,6 +437,7 @@ unorm2_append(const UNormalizer2 *norm2,
                                     second, secondLength,
                                     FALSE, pErrorCode);
 }
+#endif
 
 U_CAPI int32_t U_EXPORT2
 unorm2_getDecomposition(const UNormalizer2 *norm2,

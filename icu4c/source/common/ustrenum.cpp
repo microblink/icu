@@ -120,10 +120,13 @@ StringEnumeration::setChars(const char *s, int32_t length, UErrorCode &status) {
 
     return NULL;
 }
-UBool 
+
+#ifdef __cpp_rtti
+UBool
 StringEnumeration::operator==(const StringEnumeration& that)const {
-    return typeid(*this) == typeid(that); 
+    return typeid(*this) == typeid(that);
 }
+#endif
 
 UBool
 StringEnumeration::operator!=(const StringEnumeration& that)const {
