@@ -1000,7 +1000,7 @@ u_strlen(const UChar *s)
     while(*t != 0) {
       ++t;
     }
-    return t - s;
+    return static_cast< int32_t >( t - s );
 #endif
 }
 

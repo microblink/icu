@@ -226,7 +226,7 @@ typedef HANDLE MemoryMap;
         if(stat(path, &mystat)!=0 || mystat.st_size<=0) {
             return FALSE;
         }
-        length=mystat.st_size;
+        length=static_cast< int >( mystat.st_size );
 
         /* open the file */
         fd=open(path, O_RDONLY);

@@ -227,7 +227,7 @@ U_CAPI int32_t U_EXPORT2
 T_CString_stringToInteger(const char *integerString, int32_t radix)
 {
     char *end;
-    return uprv_strtoul(integerString, &end, radix);
+    return static_cast< int32_t >( uprv_strtoul(integerString, &end, radix) );
 
 }
 

@@ -661,7 +661,7 @@ uprv_timezone()
     t1 = mktime(&tmrec);                 /* local time in seconds*/
     uprv_memcpy( &tmrec, gmtime(&t), sizeof(tmrec) );
     t2 = mktime(&tmrec);                 /* GMT (or UTC) in seconds*/
-    tdiff = t2 - t1;
+    tdiff = static_cast< int32_t >( t2 - t1 );
 
 #if U_PLATFORM != U_PF_IPHONE
     /* imitate NT behaviour, which returns same timezone offset to GMT for

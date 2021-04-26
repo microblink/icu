@@ -961,7 +961,7 @@ res_findResource(const ResourceData *pResData, Resource r, char** path, const ch
       *key = pathP;
       t2 = res_getTableItemByKey(pResData, t1, &indexR, key);
     } else if(URES_IS_ARRAY(type)) {
-      indexR = uprv_strtol(pathP, &closeIndex, 10);
+      indexR = static_cast< int32_t >( uprv_strtol(pathP, &closeIndex, 10) );
       if(indexR >= 0 && *closeIndex == 0) {
         t2 = res_getArrayItem(pResData, t1, indexR);
       } else {
