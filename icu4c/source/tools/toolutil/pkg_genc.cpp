@@ -158,6 +158,12 @@ static const struct AssemblyType {
 
         ".long ","",HEX_0X
     },
+    {"cpp",
+        "alignas(16) extern unsigned int const icudt69_dat[] = {",
+        ",",
+        "};",
+        HEX_0X
+    },
     {"gcc-cygwin",
         ".globl _%s\n"
         "\t.section .rodata\n"
@@ -301,7 +307,7 @@ writeAssemblyCode(
         sizeof(buffer.chars),
         entry,
         sizeof(entry),
-        ".S",
+        ".cpp",
         optFilename);
     out=T_FileStream_open(buffer.chars, "w");
     if(out==NULL) {
@@ -345,7 +351,11 @@ writeAssemblyCode(
         exit(U_ILLEGAL_ARGUMENT_ERROR);
     }
     T_FileStream_writeLine(out, buffer.chars);
-    T_FileStream_writeLine(out, assemblyHeader[assemblyHeaderIndex].beginLine);
+
+    if ( uprv_strcmp( assemblyHeader[ assemblyHeaderIndex ].name, "cpp" ) != 0 )
+    {
+        T_FileStream_writeLine(out, assemblyHeader[assemblyHeaderIndex].beginLine);
+    }
 
     for(;;) {
         memset(buffer.uint32s, 0, sizeof(buffer.uint32s));
