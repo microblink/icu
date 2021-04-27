@@ -1,0 +1,18 @@
+{
+    "strategy": "additive",
+    "featureFilters": {
+        "conversion_mappings": {
+            "includelist": [
+                "ibm-912_P100-1995",
+                "ibm-5346_P100-1998",
+                "ibm-852_P100-1995",
+                "ibm-914_P100-1995",
+                "ibm-915_P100-1995",
+                "ibm-9005_X110-2007",
+                "iso-8859_10-1998",
+                "ibm-923_P100-1998"
+            ]
+        },
+        "cnvalias": "include"
+    }
+}
