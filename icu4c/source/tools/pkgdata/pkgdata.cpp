@@ -104,6 +104,8 @@ static int runCommand(const char* command, UBool specialHandling=FALSE);
 #define IN_STATIC_MODE(mode) (mode == 's')
 #define IN_FILES_MODE(mode)  (mode == 'f')
 
+extern "C" const unsigned int U_ICUDATA_ENTRY_POINT = { 0 };
+
 enum {
     NAME,
     BLDOPT,
@@ -586,7 +588,7 @@ static int32_t pkg_executeOptions(UPKGOptions *o) {
                 uprv_strcat(targetDir, PKGDATA_FILE_SEP_STRING);
                 uprv_strcat(targetDir, o->shortName);
             }
-            
+
             if(o->verbose) {
               fprintf(stdout, "# Install: Files mode, copying files to %s..\n", targetDir);
             }
@@ -723,7 +725,7 @@ static int32_t pkg_executeOptions(UPKGOptions *o) {
                 if(o->verbose) {
                   fprintf(stdout, "# Generating assembly code %s of type %s ..\n", gencFilePath, genccodeAssembly);
                 }
-                
+
                 /* Offset genccodeAssembly by 3 because "-a " */
                 if (genccodeAssembly &&
                     (uprv_strlen(genccodeAssembly)>3) &&
@@ -1051,7 +1053,7 @@ static int32_t pkg_createSymLinks(const char *targetDir, UBool specialHandling) 
         uprv_strcmp(libFileNames[LIB_FILE_VERSION], libFileNames[LIB_FILE_VERSION_MAJOR]) == 0) {
         return result;
     }
-    
+
     sprintf(cmd, "cd %s && %s %s && %s %s %s",
             targetDir,
             RM_CMD,
@@ -1322,18 +1324,18 @@ static int32_t pkg_archiveLibrary(const char *targetDir, const char *version, UB
                 targetDir,
                 libFileNames[LIB_FILE_VERSION_TMP]);
 
-        result = runCommand(cmd); 
-        if (result != 0) { 
+        result = runCommand(cmd);
+        if (result != 0) {
             fprintf(stderr, "Error creating archive library. Failed command: %s\n", cmd);
-            return result; 
-        } 
-        
-        sprintf(cmd, "%s %s%s", 
-            pkgDataFlags[RANLIB], 
-            targetDir, 
+            return result;
+        }
+
+        sprintf(cmd, "%s %s%s",
+            pkgDataFlags[RANLIB],
+            targetDir,
             libFileNames[LIB_FILE_VERSION]);
-        
-        result = runCommand(cmd); 
+
+        result = runCommand(cmd);
         if (result != 0) {
             fprintf(stderr, "Error creating archive library. Failed command: %s\n", cmd);
             return result;
@@ -1398,11 +1400,11 @@ static int32_t pkg_generateLibraryFile(const char *targetDir, const char mode, c
 
         result = runCommand(cmd);
         if (result == 0) {
-            sprintf(cmd, "%s %s%s", 
-                    pkgDataFlags[RANLIB], 
-                    targetDir, 
-                    libFileNames[LIB_FILE_VERSION]); 
-        
+            sprintf(cmd, "%s %s%s",
+                    pkgDataFlags[RANLIB],
+                    targetDir,
+                    libFileNames[LIB_FILE_VERSION]);
+
             result = runCommand(cmd);
         }
     } else /* if (IN_DLL_MODE(mode)) */ {
@@ -1613,10 +1615,10 @@ static int32_t pkg_createWithoutAssemblyCode(UPKGOptions *o, const char *targetD
 #ifdef USE_SINGLE_CCODE_FILE
     char icudtAll[SMALL_BUFFER_MAX_SIZE] = "";
     FileStream *icudtAllFile = NULL;
-    
+
     sprintf(icudtAll, "%s%s%sall.c",
             o->tmpDir,
-            PKGDATA_FILE_SEP_STRING, 
+            PKGDATA_FILE_SEP_STRING,
             libFileNames[LIB_FILE]);
     /* Remove previous icudtall.c file. */
     if (T_FileStream_file_exists(icudtAll) && (result = remove(icudtAll)) != 0) {
@@ -1657,18 +1659,18 @@ static int32_t pkg_createWithoutAssemblyCode(UPKGOptions *o, const char *targetD
 #ifdef USE_SINGLE_CCODE_FILE
             uprv_strcpy(tempObjectFile, gencmnFile);
             tempObjectFile[uprv_strlen(tempObjectFile) - 1] = 'o';
-            
+
             sprintf(cmd, "%s %s -o %s %s",
                         pkgDataFlags[COMPILER],
                         pkgDataFlags[LIBFLAGS],
                         tempObjectFile,
                         gencmnFile);
-            
+
             result = runCommand(cmd);
             if (result != 0) {
                 break;
             }
-            
+
             sprintf(buffer, "%s",tempObjectFile);
 #endif
         } else {
@@ -1740,7 +1742,7 @@ static int32_t pkg_createWithoutAssemblyCode(UPKGOptions *o, const char *targetD
 #ifndef USE_SINGLE_CCODE_FILE
         uprv_strcpy(tempObjectFile, gencmnFile);
         tempObjectFile[uprv_strlen(tempObjectFile) - 1] = 'o';
-        
+
         sprintf(cmd, "%s %s -o %s %s",
                     pkgDataFlags[COMPILER],
                     pkgDataFlags[LIBFLAGS],
@@ -1756,7 +1758,7 @@ static int32_t pkg_createWithoutAssemblyCode(UPKGOptions *o, const char *targetD
         uprv_strcat(buffer, tempObjectFile);
 
 #endif
-        
+
         if (i > 0) {
             list = list->next;
             listNames = listNames->next;
@@ -1773,7 +1775,7 @@ static int32_t pkg_createWithoutAssemblyCode(UPKGOptions *o, const char *targetD
         pkgDataFlags[LIBFLAGS],
         tempObjectFile,
         icudtAll);
-    
+
     result = runCommand(cmd);
     if (result == 0) {
         uprv_strcat(buffer, " ");
@@ -1855,7 +1857,7 @@ static int32_t pkg_createWindowsDLL(const char mode, const char *gencFilePath, U
 #ifdef CYGWINMSVC
         uprv_strcat(libFilePath, o->libName);
         uprv_strcat(libFilePath, ".lib");
-        
+
         uprv_strcat(dllFilePath, o->libName);
         uprv_strcat(dllFilePath, o->version);
 #else
@@ -1868,7 +1870,7 @@ static int32_t pkg_createWindowsDLL(const char mode, const char *gencFilePath, U
         uprv_strcat(dllFilePath, o->entryName);
 #endif
         uprv_strcat(dllFilePath, DLL_EXT);
-        
+
         uprv_strcpy(tmpResFilePath, o->tmpDir);
         uprv_strcat(tmpResFilePath, PKGDATA_FILE_SEP_STRING);
         uprv_strcat(tmpResFilePath, ICUDATA_RES_FILE);
@@ -2017,9 +2019,9 @@ static UPKGOptions *pkg_checkFlag(UPKGOptions *o) {
             return NULL;
         } else {
             sprintf(tmpbuffer, "%s%s ", o->entryName, UDATA_CMN_INTERMEDIATE_SUFFIX);
-    
+
             T_FileStream_writeLine(f, tmpbuffer);
-    
+
             T_FileStream_close(f);
         }
     }
@@ -2059,7 +2061,7 @@ static UPKGOptions *pkg_checkFlag(UPKGOptions *o) {
 #endif
     // Don't really need a return value, just need to stop compiler warnings about
     // the unused parameter 'o' on platforms where it is not otherwise used.
-    return o;   
+    return o;
 }
 
 static void loadLists(UPKGOptions *o, UErrorCode *status)

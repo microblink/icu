@@ -51,6 +51,8 @@ U_NAMESPACE_USE
 
 // main() ------------------------------------------------------------------ ***
 
+extern "C" const unsigned int U_ICUDATA_ENTRY_POINT = { 0 };
+
 static void
 printUsage(const char *pname, UBool isHelp) {
     FILE *where=isHelp ? stdout : stderr;
