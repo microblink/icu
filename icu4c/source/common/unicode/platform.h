@@ -816,7 +816,7 @@ namespace std {
 #   define U_EXPORT
 #elif defined(_MSC_VER) || (UPRV_HAS_DECLSPEC_ATTRIBUTE(dllexport) && \
                             UPRV_HAS_DECLSPEC_ATTRIBUTE(dllimport))
-#   define U_EXPORT __declspec(dllexport)
+#   define U_EXPORT //__declspec(dllexport)
 #elif defined(__GNUC__)
 #   define U_EXPORT __attribute__((visibility("default")))
 #elif (defined(__SUNPRO_CC) && __SUNPRO_CC >= 0x550) \
@@ -842,7 +842,7 @@ namespace std {
 #elif defined(_MSC_VER) || (UPRV_HAS_DECLSPEC_ATTRIBUTE(dllexport) && \
                             UPRV_HAS_DECLSPEC_ATTRIBUTE(dllimport))
     /* Windows needs to export/import data. */
-#   define U_IMPORT __declspec(dllimport)
+#   define U_IMPORT //__declspec(dllimport)
 #else
 #   define U_IMPORT 
 #endif

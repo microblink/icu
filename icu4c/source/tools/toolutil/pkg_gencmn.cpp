@@ -199,7 +199,7 @@ createCommonDataFile(const char *destDir, const char *name, const char *entrypoi
 #if (U_FILE_SEP_CHAR != U_FILE_ALT_SEP_CHAR)
         {
           char *t;
-          while((t = uprv_strchr(line,U_FILE_ALT_SEP_CHAR))) {
+          while((t = uprv_strchr(line,U_FILE_ALT_SEP_CHAR)) != NULL) {
             *t = U_FILE_SEP_CHAR;
           }
         }
@@ -566,7 +566,7 @@ fixDirToTreePath(char *s)
     char *t;
 #endif
 #if (U_FILE_SEP_CHAR != U_TREE_ENTRY_SEP_CHAR)
-    for(t=s;t=uprv_strchr(t,U_FILE_SEP_CHAR);) {
+    for(t=s;(t=uprv_strchr(t,U_FILE_SEP_CHAR)) != NULL;) {
         *t = U_TREE_ENTRY_SEP_CHAR;
     }
 #endif

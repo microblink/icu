@@ -40,7 +40,9 @@
 
 #if U_PLATFORM_USES_ONLY_WIN32_API
 #   define VC_EXTRALEAN
+#ifndef WIN32_LEAN_AND_MEAN
 #   define WIN32_LEAN_AND_MEAN
+#endif
 #   define NOUSER
 #   define NOSERVICE
 #   define NOIME
@@ -228,7 +230,7 @@ uprv_compareGoldenFiles(
     std::ifstream ifs(goldenFilePath, std::ifstream::in);
     int32_t pos = 0;
     char c;
-    while ((c = ifs.get()) != std::char_traits<char>::eof() && pos < bufferLen) {
+    while ((c = static_cast<char>(ifs.get())) != std::char_traits<char>::eof() && pos < bufferLen) {
         if (c != buffer[pos]) {
             // Files differ at this position
             return pos;

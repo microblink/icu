@@ -579,7 +579,7 @@ createLikelySubtagsString(
 
         icu::CharString tagBuffer;
         {
-            icu::CharStringByteSink sink(&tagBuffer);
+            icu::CharStringByteSink localSink(&tagBuffer);
             createTagString(
                 lang,
                 langLength,
@@ -589,7 +589,7 @@ createLikelySubtagsString(
                 regionLength,
                 NULL,
                 0,
-                sink,
+                localSink,
                 err);
         }
         if(U_FAILURE(*err)) {
@@ -635,7 +635,7 @@ createLikelySubtagsString(
 
         icu::CharString tagBuffer;
         {
-            icu::CharStringByteSink sink(&tagBuffer);
+            icu::CharStringByteSink localSink(&tagBuffer);
             createTagString(
                 lang,
                 langLength,
@@ -645,7 +645,7 @@ createLikelySubtagsString(
                 0,
                 NULL,
                 0,
-                sink,
+                localSink,
                 err);
         }
         if(U_FAILURE(*err)) {
@@ -691,7 +691,7 @@ createLikelySubtagsString(
 
         icu::CharString tagBuffer;
         {
-            icu::CharStringByteSink sink(&tagBuffer);
+            icu::CharStringByteSink localSink(&tagBuffer);
             createTagString(
                 lang,
                 langLength,
@@ -701,7 +701,7 @@ createLikelySubtagsString(
                 regionLength,
                 NULL,
                 0,
-                sink,
+                localSink,
                 err);
         }
         if(U_FAILURE(*err)) {
@@ -746,7 +746,7 @@ createLikelySubtagsString(
 
         icu::CharString tagBuffer;
         {
-            icu::CharStringByteSink sink(&tagBuffer);
+            icu::CharStringByteSink localSink(&tagBuffer);
             createTagString(
                 lang,
                 langLength,
@@ -756,7 +756,7 @@ createLikelySubtagsString(
                 0,
                 NULL,
                 0,
-                sink,
+                localSink,
                 err);
         }
         if(U_FAILURE(*err)) {

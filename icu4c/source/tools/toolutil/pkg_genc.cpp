@@ -9,7 +9,9 @@
 
 #if U_PLATFORM_HAS_WIN32_API
 #   define VC_EXTRALEAN
+#ifndef WIN32_LEAN_AND_MEAN
 #   define WIN32_LEAN_AND_MEAN
+#endif
 #   define NOUSER
 #   define NOSERVICE
 #   define NOIME
@@ -159,7 +161,7 @@ static const struct AssemblyType {
         ".long ","",HEX_0X
     },
     {"cpp",
-        "alignas(16) extern unsigned int const icudt69_dat[] = {",
+        "extern \"C\" unsigned int const %s[] = {",
         ",",
         "};",
         HEX_0X

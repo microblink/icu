@@ -160,7 +160,7 @@ CharString &CharString::appendNumber(int32_t number, UErrorCode &status) {
     while (number != 0) {
         int32_t residue = number % 10;
         number /= 10;
-        this->append(std::abs(residue) + '0', status);
+        this->append(static_cast<char>(std::abs(residue)) + '0', status);
         numLen++;
         if (U_FAILURE(status)) {
             return *this;

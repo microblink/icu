@@ -48,6 +48,11 @@
 #include "charstr.h"
 #include "uassert.h"
 
+#ifdef _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable: 4505)
+#endif
+
 #if U_HAVE_POPEN
 # include <unistd.h>
 #endif
@@ -90,7 +95,6 @@ static void pkg_createOptMatchArch(char *optMatchArch);
 static void pkg_destroyOptMatchArch(char *optMatchArch);
 #endif
 
-static int32_t pkg_createWithAssemblyCode(const char *targetDir, const char mode, const char *gencFilePath);
 static int32_t pkg_generateLibraryFile(const char *targetDir, const char mode, const char *objectFile, char *command = NULL, UBool specialHandling=FALSE);
 static int32_t pkg_archiveLibrary(const char *targetDir, const char *version, UBool reverseExt);
 static void createFileNames(UPKGOptions *o, const char mode, const char *version_major, const char *version, const char *libName, const UBool reverseExt, UBool noVersion);
@@ -595,8 +599,8 @@ static int32_t pkg_executeOptions(UPKGOptions *o) {
             result = pkg_installFileMode(targetDir, o->srcDir, o->fileListFiles->str);
         }
         return result;
-    } else /* if (IN_COMMON_MODE(mode) || IN_DLL_MODE(mode) || IN_STATIC_MODE(mode)) */ {
-        UBool noVersion = FALSE;
+    } else /* if (IN_COMMON_MODE\f(mode) || IN_DLL_MODE(mode) || IN_STATIC_MODE(mode)) */ {
+        [[maybe_unused]] UBool noVersion = FALSE;
 
         uprv_strcpy(targetDir, o->targetDir);
         uprv_strcat(targetDir, PKGDATA_FILE_SEP_STRING);
@@ -659,7 +663,7 @@ static int32_t pkg_executeOptions(UPKGOptions *o) {
         } else /* if (IN_STATIC_MODE(mode) || IN_DLL_MODE(mode)) */ {
             char gencFilePath[SMALL_BUFFER_MAX_SIZE] = "";
             char version_major[10] = "";
-            UBool reverseExt = FALSE;
+            [[maybe_unused]] UBool reverseExt = FALSE;
 
 #if !defined(WINDOWS_WITH_MSVC) || defined(USING_CYGWIN)
             /* Get the version major number. */
@@ -719,8 +723,8 @@ static int32_t pkg_executeOptions(UPKGOptions *o) {
             }
 #endif
 
-            if (!o->withoutAssembly && pkgDataFlags[GENCCODE_ASSEMBLY_TYPE][0] != 0) {
-                const char* genccodeAssembly = pkgDataFlags[GENCCODE_ASSEMBLY_TYPE];
+            if (!o->withoutAssembly) {
+                const char *genccodeAssembly = "-a cpp";
 
                 if(o->verbose) {
                   fprintf(stdout, "# Generating assembly code %s of type %s ..\n", gencFilePath, genccodeAssembly);
@@ -737,20 +741,6 @@ static int32_t pkg_executeOptions(UPKGOptions *o) {
                         NULL,
                         gencFilePath,
                         sizeof(gencFilePath));
-
-                    result = pkg_createWithAssemblyCode(targetDir, mode, gencFilePath);
-                    if (result != 0) {
-                        fprintf(stderr, "Error generating assembly code for data.\n");
-                        return result;
-                    } else if (IN_STATIC_MODE(mode)) {
-                      if(o->install != NULL) {
-                        if(o->verbose) {
-                          fprintf(stdout, "# Installing static library into %s\n", o->install);
-                        }
-                        result = pkg_installLibrary(o->install, targetDir, noVersion);
-                      }
-                      return result;
-                    }
                 } else {
                     fprintf(stderr,"Assembly type \"%s\" is unknown.\n", genccodeAssembly);
                     return -1;
@@ -847,10 +837,10 @@ static int32_t pkg_executeOptions(UPKGOptions *o) {
 
 /* Initialize the pkgDataFlags with the option file given. */
 static int32_t initializePkgDataFlags(UPKGOptions *o) {
-    UErrorCode status = U_ZERO_ERROR;
+    [[maybe_unused]] UErrorCode status = U_ZERO_ERROR;
     int32_t result = 0;
     int32_t currentBufferSize = SMALL_BUFFER_MAX_SIZE;
-    int32_t tmpResult = 0;
+    [[maybe_unused]] int32_t tmpResult = 0;
 
     /* Initialize pkgdataFlags */
     pkgDataFlags = (char**)uprv_malloc(sizeof(char*) * PKGDATA_FLAGS_SIZE);
@@ -921,7 +911,9 @@ static int32_t initializePkgDataFlags(UPKGOptions *o) {
  * Given the base libName and version numbers, generate the libary file names and store it in libFileNames.
  * Depending on the configuration, the library name may either end with version number or shared object suffix.
  */
-static void createFileNames(UPKGOptions *o, const char mode, const char *version_major, const char *version, const char *libName, UBool reverseExt, UBool noVersion) {
+static void createFileNames(UPKGOptions *o, const char mode, const char *version_major,
+                                             const char *version, const char *libName, UBool reverseExt,
+                                             UBool noVersion) {
     const char* FILE_EXTENSION_SEP = uprv_strlen(pkgDataFlags[SO_EXT]) == 0 ? "" : ".";
     const char* FILE_SUFFIX = pkgDataFlags[LIB_EXT_ORDER][0] == '.' ? "." : "";
 
@@ -1536,40 +1528,6 @@ static int32_t pkg_generateLibraryFile(const char *targetDir, const char mode, c
     }
 
     return result;
-}
-
-static int32_t pkg_createWithAssemblyCode(const char *targetDir, const char mode, const char *gencFilePath) {
-    char tempObjectFile[SMALL_BUFFER_MAX_SIZE] = "";
-    int32_t result = 0;
-    int32_t length = 0;
-
-    /* Remove the ending .s and replace it with .o for the new object file. */
-    uprv_strcpy(tempObjectFile, gencFilePath);
-    tempObjectFile[uprv_strlen(tempObjectFile)-1] = 'o';
-
-    length = static_cast<int32_t>(uprv_strlen(pkgDataFlags[COMPILER]) + uprv_strlen(pkgDataFlags[LIBFLAGS])
-             + uprv_strlen(tempObjectFile) + uprv_strlen(gencFilePath) + BUFFER_PADDING_SIZE);
-
-    LocalMemory<char> cmd((char *)uprv_malloc(sizeof(char) * length));
-    if (cmd.isNull()) {
-        return -1;
-    }
-
-    /* Generate the object file. */
-    sprintf(cmd.getAlias(), "%s %s -o %s %s",
-            pkgDataFlags[COMPILER],
-            pkgDataFlags[LIBFLAGS],
-            tempObjectFile,
-            gencFilePath);
-
-    result = runCommand(cmd.getAlias());
-
-    if (result != 0) {
-        fprintf(stderr, "Error creating with assembly code. Failed command: %s\n", cmd.getAlias());
-        return result;
-    }
-
-    return pkg_generateLibraryFile(targetDir, mode, tempObjectFile);
 }
 
 #ifdef BUILD_DATA_WITHOUT_ASSEMBLY
@@ -2202,7 +2160,7 @@ static UBool getPkgDataPath(const char *cmd, UBool verbose, char *buf, size_t it
 #endif
 
 /* Get path to pkgdata.inc. Try pkg-config first, falling back to icu-config. */
-static int32_t pkg_getPkgDataPath(UBool verbose, UOption *option) {
+static int32_t pkg_getPkgDataPath([[maybe_unused]] UBool verbose, [[maybe_unused]] UOption *option) {
 #if U_HAVE_POPEN
     static char buf[512] = "";
     UBool pkgconfigIsValid = TRUE;
@@ -2288,4 +2246,8 @@ static void pkg_destroyOptMatchArch(char *optMatchArch) {
         fprintf(stderr, "T_FileStream_remove failed to delete %s\n", optMatchArch);
     }
 }
+#endif
+
+#ifdef _MSC_VER
+    #pragma warning(pop)
 #endif

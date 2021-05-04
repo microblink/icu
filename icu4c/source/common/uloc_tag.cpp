@@ -1296,8 +1296,8 @@ _appendKeywordsToLanguageTag(const char* localeID, icu::ByteSink& sink, UBool st
 
             icu::CharString buf;
             {
-                icu::CharStringByteSink sink(&buf);
-                ulocimp_getKeywordValue(localeID, key, sink, &tmpStatus);
+                icu::CharStringByteSink localSink(&buf);
+                ulocimp_getKeywordValue(localeID, key, localSink, &tmpStatus);
             }
             len = buf.length();
 
@@ -2708,8 +2708,8 @@ ulocimp_toLanguageTag(const char* localeID,
                 if (len == 1 && *key == PRIVATEUSE) {
                     icu::CharString buf;
                     {
-                        icu::CharStringByteSink sink(&buf);
-                        ulocimp_getKeywordValue(localeID, key, sink, &tmpStatus);
+                        icu::CharStringByteSink localSink(&buf);
+                        ulocimp_getKeywordValue(localeID, key, localSink, &tmpStatus);
                     }
                     if (U_SUCCESS(tmpStatus)) {
                         if (ultag_isPrivateuseValueSubtags(buf.data(), buf.length())) {

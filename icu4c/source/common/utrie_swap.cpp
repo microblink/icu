@@ -262,18 +262,18 @@ ucptrie_swap(const UDataSwapper *ds,
         ds->swapArray16(ds, inIndex, trie.indexLength*2, outIndex, pErrorCode);
 
         /* swap the data */
-        const uint16_t *inData=inIndex+trie.indexLength;
-        uint16_t *outData=outIndex+trie.indexLength;
+        const uint16_t *inDat=inIndex+trie.indexLength;
+        uint16_t *outDat=outIndex+trie.indexLength;
         switch(valueWidth) {
         case UCPTRIE_VALUE_BITS_16:
-            ds->swapArray16(ds, inData, dataLength*2, outData, pErrorCode);
+            ds->swapArray16(ds, inDat, dataLength*2, outDat, pErrorCode);
             break;
         case UCPTRIE_VALUE_BITS_32:
-            ds->swapArray32(ds, inData, dataLength*4, outData, pErrorCode);
+            ds->swapArray32(ds, inDat, dataLength*4, outDat, pErrorCode);
             break;
         case UCPTRIE_VALUE_BITS_8:
             if(inTrie!=outTrie) {
-                uprv_memmove(outData, inData, dataLength);
+                uprv_memmove(outDat, inDat, dataLength);
             }
             break;
         default:

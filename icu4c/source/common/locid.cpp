@@ -1181,13 +1181,13 @@ private:
 
 CharString&
 AliasReplacer::generateKey(
-        const char* language, const char* region, const char* variant,
+        const char* lang, const char* reg, const char* variant,
         CharString& out, UErrorCode status)
 {
-    out.append(language, status);
-    if (notEmpty(region)) {
+    out.append(lang, status);
+    if (notEmpty(reg)) {
         out.append(SEP_CHAR, status)
-            .append(region, status);
+            .append(reg, status);
     }
     if (notEmpty(variant)) {
        out.append(SEP_CHAR, status)
@@ -1228,9 +1228,9 @@ AliasReplacer::parseLanguageReplacement(
         return;
     }
     toBeFreed.addElement(str, status);
-    char* data = str->data();
-    replacedLanguage = (const char*) data;
-    char* endOfField = uprv_strchr(data, '_');
+    char* dat = str->data();
+    replacedLanguage = (const char*) dat;
+    char* endOfField = uprv_strchr(dat, '_');
     *endOfField = '\0'; // null terminiate it.
     endOfField++;
     const char* start = endOfField;
@@ -2637,8 +2637,8 @@ Locale::getUnicodeKeywordValue(StringPiece keywordName,
 
     CharString legacy_value;
     {
-        CharStringByteSink sink(&legacy_value);
-        getKeywordValue(legacy_key, sink, status);
+        CharStringByteSink localSink(&legacy_value);
+        getKeywordValue(legacy_key, localSink, status);
     }
 
     if (U_FAILURE(status)) {

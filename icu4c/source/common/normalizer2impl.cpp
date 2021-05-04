@@ -2545,7 +2545,7 @@ void InitCanonIterData::doInit(Normalizer2Impl *impl, UErrorCode &errorCode) {
                                        nullptr, nullptr, &value)) >= 0) {
             // Call Normalizer2Impl::makeCanonIterDataFromNorm16() for a range of same-norm16 characters.
             if (value != Normalizer2Impl::INERT) {
-                impl->makeCanonIterDataFromNorm16(start, end, value, *impl->fCanonIterData, errorCode);
+                impl->makeCanonIterDataFromNorm16(start, end, static_cast<uint16_t>(value), *impl->fCanonIterData, errorCode);
             }
             start = end + 1;
         }

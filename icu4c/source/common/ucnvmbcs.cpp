@@ -5034,7 +5034,7 @@ ucnv_SBCSFromUTF8(UConverterFromUnicodeArgs *pFromUArgs,
     uint8_t b, t1, t2;
 
     uint32_t asciiRoundtrips;
-    uint16_t value, minValue = 0;
+    uint16_t value = 0, minValue = 0;
     UBool hasSupplementary;
 
     /* set up the local pointers */

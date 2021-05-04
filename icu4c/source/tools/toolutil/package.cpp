@@ -701,22 +701,22 @@ Package::writePackage(const char *filename, char outType, const char *comment) {
     if(comment!=NULL) {
         /* get the header size minus the current comment */
         DataHeader *pHeader;
-        int32_t length;
+        int32_t len;
 
         pHeader=(DataHeader *)header;
         headerLength=4+pHeader->info.size;
-        length=(int32_t)strlen(comment);
-        if((int32_t)(headerLength+length)>=(int32_t)sizeof(header)) {
+        len=(int32_t)strlen(comment);
+        if((int32_t)(headerLength+len)>=(int32_t)sizeof(header)) {
             fprintf(stderr, "icupkg: comment too long\n");
             exit(U_BUFFER_OVERFLOW_ERROR);
         }
-        memcpy(header+headerLength, comment, length+1);
-        headerLength+=length;
+        memcpy(header+headerLength, comment, len+1);
+        headerLength+=len;
         if(headerLength&0xf) {
             /* NUL-pad the header to a multiple of 16 */
-            length=(headerLength+0xf)&~0xf;
-            memset(header+headerLength, 0, length-headerLength);
-            headerLength=length;
+            len=(headerLength+0xf)&~0xf;
+            memset(header+headerLength, 0, len-headerLength);
+            headerLength=len;
         }
         pHeader->dataHeader.headerSize=(uint16_t)headerLength;
     }

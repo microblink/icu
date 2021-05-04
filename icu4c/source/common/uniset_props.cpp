@@ -236,14 +236,10 @@ public:
         return p != 0;
     }
 };
-
-#ifdef __cpp_rtti
 constexpr int32_t MAX_DEPTH = 100;
-#endif
 
 }  // namespace
 
-#ifdef __cpp_rtti
 /**
  * Parse the pattern from the given RuleCharacterIterator.  The
  * iterator is advanced over the parsed pattern.
@@ -358,11 +354,7 @@ void UnicodeSet::applyPattern(RuleCharacterIterator& chars,
             } else if (symbols != 0) {
                 const UnicodeFunctor *m = symbols->lookupMatcher(c);
                 if (m != 0) {
-                    const UnicodeSet *ms = dynamic_cast<const UnicodeSet *>(m);
-                    if (ms == NULL) {
-                        ec = U_MALFORMED_SET;
-                        return;
-                    }
+                    const UnicodeSet *ms = static_cast<const UnicodeSet *>(m);
                     // casting away const, but `nested' won't be modified
                     // (important not to modify stored set)
                     nested = const_cast<UnicodeSet*>(ms);
@@ -656,7 +648,6 @@ void UnicodeSet::applyPattern(RuleCharacterIterator& chars,
         ec = U_MEMORY_ALLOCATION_ERROR;
     }
 }
-#endif
 
 //----------------------------------------------------------------
 // Property set implementation

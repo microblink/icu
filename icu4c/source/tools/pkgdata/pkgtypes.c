@@ -202,7 +202,7 @@ CharList *pkg_appendToList(CharList *l, CharList** end, const char *str)
 char * convertToNativePathSeparators(char *path) {
 #if defined(U_MAKE_IS_NMAKE)
     char *itr;
-    while ((itr = uprv_strchr(path, U_FILE_ALT_SEP_CHAR))) {
+    while ((itr = uprv_strchr(path, U_FILE_ALT_SEP_CHAR)) != NULL) {
         *itr = U_FILE_SEP_CHAR;
     }
 #endif

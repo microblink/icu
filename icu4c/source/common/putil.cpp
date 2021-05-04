@@ -1105,7 +1105,7 @@ uprv_tzname(int n)
     (void)n; // Avoid unreferenced parameter warning.
     const char *tzid = NULL;
 #if U_PLATFORM_USES_ONLY_WIN32_API
-    tzid = uprv_detectWindowsTimeZone();
+    //tzid = uprv_detectWindowsTimeZone();
 
     if (tzid != NULL) {
         return tzid;

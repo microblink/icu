@@ -78,9 +78,9 @@ ucptrie_openFromBinary(UCPTrieType type, UCPTrieValueWidth valueWidth,
         ((options & UCPTRIE_OPTIONS_DATA_NULL_OFFSET_MASK) << 8) | header->dataNullOffset;
 
     tempTrie.highStart = header->shiftedHighStart << UCPTRIE_SHIFT_2;
-    tempTrie.shifted12HighStart = (tempTrie.highStart + 0xfff) >> 12;
-    tempTrie.type = type;
-    tempTrie.valueWidth = valueWidth;
+    tempTrie.shifted12HighStart = static_cast<uint16_t>((tempTrie.highStart + 0xfff) >> 12);
+    tempTrie.type = static_cast<uint8_t>(type);
+    tempTrie.valueWidth = static_cast<uint8_t>(valueWidth);
 
     // Calculate the actual length.
     int32_t actualLength = (int32_t)sizeof(UCPTrieHeader) + tempTrie.indexLength * 2;
@@ -280,7 +280,7 @@ UChar32 getRange(const void *t, UChar32 start,
     int32_t prevI3Block = -1;
     int32_t prevBlock = -1;
     UChar32 c = start;
-    uint32_t trieValue, value = nullValue;
+    uint32_t trieValue = 0, value = nullValue;
     bool haveValue = false;
     do {
         int32_t i3Block;
@@ -516,7 +516,7 @@ ucptrie_toBinary(const UCPTrie *trie,
     header->dataLength = (uint16_t)trie->dataLength;
     header->index3NullOffset = trie->index3NullOffset;
     header->dataNullOffset = (uint16_t)trie->dataNullOffset;
-    header->shiftedHighStart = trie->highStart >> UCPTRIE_SHIFT_2;
+    header->shiftedHighStart = static_cast<uint16_t>(trie->highStart >> UCPTRIE_SHIFT_2);
     bytes += sizeof(UCPTrieHeader);
 
     uprv_memcpy(bytes, trie->index, trie->indexLength * 2);

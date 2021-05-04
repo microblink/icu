@@ -309,7 +309,7 @@ UChar32 MutableCodePointTrie::getRange(
     uint32_t nullValue = initialValue;
     if (filter != nullptr) { nullValue = filter(context, nullValue); }
     UChar32 c = start;
-    uint32_t trieValue, value;
+    uint32_t trieValue = 0, value = 0;
     bool haveValue = false;
     int32_t i = c >> UCPTRIE_SHIFT_3;
     do {
@@ -1351,7 +1351,7 @@ int32_t MutableCodePointTrie::compactIndex(int32_t fastILimit, MixedBlocks &mixe
                 i3 = indexLength - n;
                 int32_t prevIndexLength = indexLength;
                 while (n < UCPTRIE_INDEX_3_BLOCK_LENGTH) {
-                    index16[indexLength++] = index[i + n++];
+                    index16[indexLength++] = static_cast<uint16_t>(index[i + n++]);
                 }
                 mixedBlocks.extend(index16, index3Start, prevIndexLength, indexLength);
                 if (hasLongI3Blocks) {
@@ -1369,29 +1369,29 @@ int32_t MutableCodePointTrie::compactIndex(int32_t fastILimit, MixedBlocks &mixe
                 ++k;
                 uint32_t v = index[j++];
                 uint32_t upperBits = (v & 0x30000) >> 2;
-                index16[k++] = v;
+                index16[k++] = static_cast<uint16_t>(v);
                 v = index[j++];
                 upperBits |= (v & 0x30000) >> 4;
-                index16[k++] = v;
+                index16[k++] = static_cast<uint16_t>(v);
                 v = index[j++];
                 upperBits |= (v & 0x30000) >> 6;
-                index16[k++] = v;
+                index16[k++] = static_cast<uint16_t>(v);
                 v = index[j++];
                 upperBits |= (v & 0x30000) >> 8;
-                index16[k++] = v;
+                index16[k++] = static_cast<uint16_t>(v);
                 v = index[j++];
                 upperBits |= (v & 0x30000) >> 10;
-                index16[k++] = v;
+                index16[k++] = static_cast<uint16_t>(v);
                 v = index[j++];
                 upperBits |= (v & 0x30000) >> 12;
-                index16[k++] = v;
+                index16[k++] = static_cast<uint16_t>(v);
                 v = index[j++];
                 upperBits |= (v & 0x30000) >> 14;
-                index16[k++] = v;
+                index16[k++] = static_cast<uint16_t>(v);
                 v = index[j++];
                 upperBits |= (v & 0x30000) >> 16;
-                index16[k++] = v;
-                index16[k - 9] = upperBits;
+                index16[k++] = static_cast<uint16_t>(v);
+                index16[k - 9] = static_cast<uint16_t>(upperBits);
             } while (j < jLimit);
             int32_t n = longI3Blocks.findBlock(index16, index16, indexLength);
             if (n >= 0) {
@@ -1424,7 +1424,7 @@ int32_t MutableCodePointTrie::compactIndex(int32_t fastILimit, MixedBlocks &mixe
             index3NullOffset = i3;
         }
         // Set the index-2 table entry.
-        index2[i2Length++] = i3;
+        index2[i2Length++] = static_cast<uint16_t>(i3);
     }
     U_ASSERT(i2Length == index2Capacity);
     U_ASSERT(indexLength <= index3Start + index3Capacity);
@@ -1474,7 +1474,7 @@ int32_t MutableCodePointTrie::compactIndex(int32_t fastILimit, MixedBlocks &mixe
             mixedBlocks.extend(index16, index3Start, prevIndexLength, indexLength);
         }
         // Set the index-1 table entry.
-        index16[i1++] = i2;
+        index16[i1++] = static_cast<uint16_t>(i2);
     }
     U_ASSERT(i1 == index3Start);
     U_ASSERT(indexLength <= index16Capacity);
@@ -1668,11 +1668,11 @@ UCPTrie *MutableCodePointTrie::build(UCPTrieType type, UCPTrieValueWidth valueWi
     trie->highStart = highStart;
     // Round up shifted12HighStart to a multiple of 0x1000 for easy testing from UTF-8 lead bytes.
     // Runtime code needs to then test for the real highStart as well.
-    trie->shifted12HighStart = (highStart + 0xfff) >> 12;
-    trie->type = type;
-    trie->valueWidth = valueWidth;
+    trie->shifted12HighStart = static_cast<uint16_t>((highStart + 0xfff) >> 12);
+    trie->type = static_cast<uint8_t>(type);
+    trie->valueWidth = static_cast<uint8_t>(valueWidth);
 
-    trie->index3NullOffset = index3NullOffset;
+    trie->index3NullOffset = static_cast<uint16_t>(index3NullOffset);
     trie->dataNullOffset = dataNullOffset;
     trie->nullValue = initialValue;
 

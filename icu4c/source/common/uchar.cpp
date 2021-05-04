@@ -576,6 +576,10 @@ uscript_getScript(UChar32 c, UErrorCode *pErrorCode) {
     }
 }
 
+#ifdef _MSC_VER
+    #pragma warning( push )
+    #pragma warning( disable: 4389 )
+#endif
 U_CAPI UBool U_EXPORT2
 uscript_hasScript(UChar32 c, UScriptCode sc) {
     uint32_t scriptX=u_getUnicodeProperties(c, 0)&UPROPS_SCRIPT_X_MASK;
@@ -598,6 +602,9 @@ uscript_hasScript(UChar32 c, UScriptCode sc) {
     }
     return sc32==(*scx&0x7fff);
 }
+#ifdef _MSC_VER
+    #pragma warning( pop )
+#endif
 
 U_CAPI int32_t U_EXPORT2
 uscript_getScriptExtensions(UChar32 c,
