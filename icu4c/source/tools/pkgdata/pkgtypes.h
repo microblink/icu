@@ -24,6 +24,9 @@
 #include "unicode/utypes.h"
 #include "filestrm.h"
 
+extern "C"
+{
+
 /* linked list */
 struct _CharList;
 
@@ -170,3 +173,5 @@ char * convertToNativePathSeparators(char *path);
 #define PKGDATA_DERIVED_PATH '\t'
 
 #endif
+
+}  // extern "C"

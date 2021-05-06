@@ -27,6 +27,9 @@
 #include "pkgtypes.h"
 #include "putilimp.h"
 
+extern "C"
+{
+
 const char *pkg_writeCharListWrap(FileStream *s, CharList *l, const char *delim, const char *brk, int32_t quote)
 {
     int32_t ln = 0;
@@ -138,7 +141,7 @@ uint32_t pkg_countCharList(CharList *l)
 CharList *pkg_prependToList(CharList *l, const char *str)
 {
   CharList *newList;
-  newList = uprv_malloc(sizeof(CharList));
+  newList = reinterpret_cast< CharList * >(uprv_malloc(sizeof(CharList)));
 
   /* test for NULL */
   if(newList == NULL) {
@@ -212,10 +215,10 @@ char * convertToNativePathSeparators(char *path) {
 CharList *pkg_appendUniqueDirToList(CharList *l, CharList** end, const char *strAlias) {
     char aBuf[1024];
     char *rPtr;
-    rPtr = uprv_strrchr(strAlias, U_FILE_SEP_CHAR);
+    rPtr = const_cast< char * >(uprv_strrchr(strAlias, U_FILE_SEP_CHAR));
 #if (U_FILE_SEP_CHAR != U_FILE_ALT_SEP_CHAR)
     {
-        char *aPtr = uprv_strrchr(strAlias, U_FILE_ALT_SEP_CHAR);
+        char *aPtr = const_cast< char * >(uprv_strrchr(strAlias, U_FILE_ALT_SEP_CHAR));
         if(!rPtr || /* regular char wasn't found or.. */
             (aPtr && (aPtr > rPtr)))
         { /* alt ptr exists and is to the right of r ptr */
@@ -301,3 +304,5 @@ UBool  pkg_listContains(CharList *l, const char *str)
 
   return false;
 }
+
+}  // extern "C"
