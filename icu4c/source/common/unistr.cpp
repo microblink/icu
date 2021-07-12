@@ -366,7 +366,11 @@ int32_t getGrowCapacity(int32_t newLength) {
 }  // namespace
 
 UBool
-UnicodeString::allocate(int32_t capacity) {
+UnicodeString::allocate(int32_t capacity)
+#ifdef __clang__
+    __attribute__(( no_sanitize( "implicit-integer-sign-change" ) ))
+#endif
+{
   if(capacity <= US_STACKBUF_SIZE) {
     fUnion.fFields.fLengthAndFlags = kShortString;
     return TRUE;
